@@ -1,3 +1,14 @@
+<?php 
+session_start();
+
+$con = mysqli_connect("localhost","root","","todoapp");
+if(!$con)
+{
+    echo 'error in connection'.mysql_connect_error($con);
+}
+$query = "SELECT * FROM `tasks`";
+$results = mysqli_query($con, $query);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,6 +29,11 @@
         <div class="row">
             <div class="col-8 mx-auto">
                 <form action="handeler/store_task.php" method="POST" class="form border p-2 my-5">
+                    <?php if (isset($_SESSION['succes'])):?>
+                        <div class="alert alert-success text-center">
+                            <?= $_SESSION['succes'] ?>
+                        </div>
+                        <?php endif;?>
                     <input type="text" name="title" class="form-control my-3 border border-success" placeholder="add new todo">
                     <input type="submit" value="Add" class="form-control btn btn-primary my-3 " placeholder="add new todo">
                 </form>
@@ -33,14 +49,15 @@
                     </thead>
                     <tbody>
                             <tr>
-                                <?php foreach():?>
-                                <td></td>
-                                <td></td>
-                                <?php endforeach;?>
+                                <?php while($row=mysqli_fetch_assoc($results)):?>
+                                <td><?= $row['id']?></td>
+                                <td><?= $row['title']?></td>
+                              
                                 <td>
                                     <a href="#" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i> </a>
                                     <a href="#" class="btn btn-info"><i class="fa-solid fa-edit"></i> </a>
                                 </td>
+                                  <?php endwhile;?>
                             </tr>
 
                     </tbody>
