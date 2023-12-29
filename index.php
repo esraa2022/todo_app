@@ -1,28 +1,12 @@
 <?php 
 session_start();
+include('database/run_DB.php');
 
-$con = mysqli_connect("localhost","root","","todoapp");
-if(!$con)
-{
-    echo 'error in connection'.mysql_connect_error($con);
-}
-$query = "SELECT * FROM `tasks`";
-$results = mysqli_query($con, $query);
+$sql = "SELECT * FROM tasks ";
+$results = run($sql);
 ?>
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
-    <title>Document</title>
-</head>
-
-<body>
-
+<?php include('include/header.php');?>
   
 
     <div class="container">
@@ -31,7 +15,12 @@ $results = mysqli_query($con, $query);
                 <form action="handeler/store_task.php" method="POST" class="form border p-2 my-5">
                     <?php if (isset($_SESSION['succes'])):?>
                         <div class="alert alert-success text-center">
-                            <?= $_SESSION['succes'] ?>
+                            <?= $_SESSION['sucess'] ?>
+                        </div>
+                        <?php endif;?>
+                        <?php if (isset($_SESSION['delete'])):?>
+                        <div class="alert alert-success text-center">
+                            <?= $_SESSION['delete'] ?>
                         </div>
                         <?php endif;?>
                     <input type="text" name="title" class="form-control my-3 border border-success" placeholder="add new todo">
@@ -40,6 +29,7 @@ $results = mysqli_query($con, $query);
             </div>
             <div class="col-12">
                 <table class="table table-bordered">
+                    
                     <thead>
                         <tr>
                             <th>#</th>
@@ -48,27 +38,22 @@ $results = mysqli_query($con, $query);
                         </tr>
                     </thead>
                     <tbody>
+                    <?php while($row=mysqli_fetch_assoc($results)):?>
                             <tr>
-                                <?php while($row=mysqli_fetch_assoc($results)):?>
+                                
                                 <td><?= $row['id']?></td>
                                 <td><?= $row['title']?></td>
                               
                                 <td>
-                                    <a href="#" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i> </a>
-                                    <a href="#" class="btn btn-info"><i class="fa-solid fa-edit"></i> </a>
+                                    <a href="handeler/delete.php?id=<?=$row['id']?>" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i> </a>
+                                    <a href="handeler/edite.php?id=<?=$row['id']?>" class="btn btn-info"><i class="fa-solid fa-edit"></i> </a>
                                 </td>
-                                  <?php endwhile;?>
+                                  
                             </tr>
-
+                            <?php endwhile;?>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="script.js"></script>
-</body>
-
-</html>
+    <?php include('include/footer.php');?>
