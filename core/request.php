@@ -1,14 +1,20 @@
 <?php
 function checkRequestMethod($method)
 {
-    return $_SERVER['REQUEST_METHOD']== $method;
+    if( $_SERVER['REQUEST_METHOD']== $method)
+    return true;
+    return false;
 }
  function checkPostIput($input)
  {
-    return isset($_POST[$input]);
+   if(isset($_POST[$input]))
+   return  $_POST[$input];
+return false;
  }
  function checkGetIput($input)
  {
-    return isset($_GET[$input]);
+   if(isset($_GET[$input]))
+   return  $_GET[$input];
+return false;
  }
 ?>

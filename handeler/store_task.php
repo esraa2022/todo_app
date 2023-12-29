@@ -1,18 +1,54 @@
 <?php
-session_start();
-include('../database/run_DB.php');
 
-if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['title']))
+include('../database/run_DB.php');
+include ('../core/request.php');
+include ('../core/session.php');
+include ('../core/validation.php');
+
+
+
+if(checkRequestMethod('POST') )
 {
-    $title = trim(htmlspecialchars(htmlentities($_POST['title'])));
-    $sql="INSERT INTO tasks(title) VALUES( '$title')";
+    $title = checkPostIput('title');
+   
+  
+    if(!$title)
+    {
+        $errores[]='title is requierd';
+    }
+    else
+    {
+     $title= santizeInput( $title );
+    }
+
+    if(minInput($title,3))
+    {
+        $errores[]='title must be larger than 3';
+    }
+
+    if(maxInput($title,60))
+    {
+        $errores[]='title must be smaller than 60';
+    }
+
+
+
+if(empty($errores))
+{$sql="INSERT INTO tasks(`title`) VALUES( '$title')";
     $results=run($sql);
     if( mysqli_affected_rows($conn)==1)
     {
-        $_SESSION['sucess'] ='data  is added suceccfuly';
+        
+        sessionStore('success','data  is added suceccfuly');
 
     }
-header('location:../index.php');
 
 }
+else
+{
+    sessionStore('errores',$errores);
+
+}
+}
+redirect('../index.php');
  ?>

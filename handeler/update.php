@@ -1,17 +1,50 @@
 <?php
 include('../database/run_DB.php');
-if(isset($_POST['title']) && isset($_POST['id']))
+include ('../core/request.php');
+include ('../core/session.php');
+include ('../core/validation.php');
+if( checkPostIput('id'))
 {
- $title=$_POST['title'];
- $id=$_POST['id'];
+ $title=checkPostIput('title');
 
+ 
+ if( !$title)
+ {
+     $errores[]='title is requierd';
+ }
+ else
+{$title= santizeInput( $title );}
+ if(minInput($title,3))
+ {
+     $errores[]='title must be larger than 3';
+ }
+
+ if(maxInput($title,60))
+ {
+     $errores[]='title must be smaller than 60';
+ }
+ $id=checkPostIput('id');
+
+
+
+
+if(empty($errores))
+{
 $sql="UPDATE  `tasks` SET `title` = '$title' WHERE `id`= '$id' ";
 $result=run($sql);
 print($result);
 if($result)
 {
-    $_SESSION['edite'] = 'task is edited';
-    header('location:../index.php');
+    
+    sessionStore('edite','task is edited');
+    redirect('../index.php');
+
+}
+}
+
+else{
+    sessionStore('editeErrores',$errores);
+    redirect('../index.php');
 }
 
 }

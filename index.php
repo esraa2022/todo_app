@@ -1,8 +1,9 @@
 <?php 
-session_start();
-include('database/run_DB.php');
 
-$sql = "SELECT * FROM tasks ";
+include('database/run_DB.php');
+include ('core/session.php');
+
+$sql = "SELECT * FROM `tasks` ";
 $results = run($sql);
 ?>
 
@@ -13,16 +14,45 @@ $results = run($sql);
         <div class="row">
             <div class="col-8 mx-auto">
                 <form action="handeler/store_task.php" method="POST" class="form border p-2 my-5">
-                    <?php if (isset($_SESSION['succes'])):?>
+                    <?php if (!empty(sessionGet('success'))):?>
                         <div class="alert alert-success text-center">
-                            <?= $_SESSION['sucess'] ?>
+                            <?= sessionGet('success'); ?>
                         </div>
+                        <?php sessionDelete('success'); ?>
                         <?php endif;?>
-                        <?php if (isset($_SESSION['delete'])):?>
+
+                        <?php if (!empty(sessionGet('edite'))):?>
                         <div class="alert alert-success text-center">
-                            <?= $_SESSION['delete'] ?>
+                            <?= sessionGet('edite'); ?>
                         </div>
+                        <?php sessionDelete('edite'); ?>
                         <?php endif;?>
+
+                        <?php if (!empty(sessionGet('delete'))):?>
+                        <div class="alert alert-success text-center">
+                            <?= sessionGet('delete');?>
+                        </div>
+                        <?php sessionDelete('delete'); ?>
+                        <?php endif;?>
+
+                        <?php if (!empty(sessionGet('errores'))):?>
+                            <?php foreach(sessionGet('errores') as $errore):?>
+                        <div class="alert alert-danger text-center">
+                            <?= $errore;?>
+                        </div>
+                        <?php endforeach;?>
+                        <?php sessionDelete('errores'); ?>
+                        <?php endif;?>
+
+                        <?php if (!empty(sessionGet('editeErrores'))):?>
+                            <?php foreach(sessionGet('editeErrores') as $errore):?>
+                        <div class="alert alert-danger text-center">
+                            <?= $errore?>
+                        </div>
+                        <?php endforeach?>
+                        <?php sessionDelete('editeErrores') ?>
+                        <?php endif;?>
+
                     <input type="text" name="title" class="form-control my-3 border border-success" placeholder="add new todo">
                     <input type="submit" value="Add" class="form-control btn btn-primary my-3 " placeholder="add new todo">
                 </form>

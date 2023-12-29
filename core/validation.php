@@ -7,8 +7,8 @@ function santizeInput($input)
 function requerdImput($input)
 {
     if(empty($input))
-    return false;
-return true;
+    return true;
+    return  false;
 }
 
 function minInput($input,$length)
@@ -23,5 +23,9 @@ function maxInput($input,$length)
     if(strlen($input)>$length)
     return true;
 return false;
+}
+function redirect($path)
+{
+    header('location:'.$path);
 }
 ?>

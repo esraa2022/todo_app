@@ -1,17 +1,23 @@
 <?php
-include('../database/run_DB.php');
-if(isset($_GET['id']))
+include ('../database/run_DB.php');
+include ('../core/request.php');
+include ('../core/session.php');
+include ('../core/validation.php');
+if(checkRequestMethod("GET") && checkGetIput('id'))
 {
-$id=$_GET['id'];
+$id=checkGetIput('id');
 $sql = "DELETE FROM `tasks` WHERE `id`='$id'";
 $result=run( $sql);
 
-}
-if($result)
-{
-     $_SESSION['delete']="task is deleted";
 
-     header('location:../index.php');
+if($result)
+
+  {   
+     sessionStore('delete',"task is deleted");
+     redirect('../index.php');
 }
+     
+}
+
 
 ?>
